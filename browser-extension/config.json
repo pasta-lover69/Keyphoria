@@ -1,0 +1,26 @@
+{
+  "api": {
+    "url": "http://localhost:5000",
+    "endpoints": {
+      "register": "/register",
+      "login": "/login",
+      "logout": "/logout",
+      "checkSession": "/check-session",
+      "addPassword": "/add",
+      "getAllPasswords": "/get-all-passwords",
+      "getPassword": "/get",
+      "editPassword": "/edit-password",
+      "deletePassword": "/delete-password",
+      "getServices": "/get-services"
+    }
+  },
+  "security": {
+    "sessionTimeout": 3600,
+    "passwordMinLength": 6,
+    "usernameMinLength": 3
+  },
+  "ui": {
+    "notificationDuration": 3000,
+    "searchDebounce": 300
+  }
+}
