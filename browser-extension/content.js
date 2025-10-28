@@ -1,0 +1,303 @@
+// Content Script - Detects and fills login forms
+
+(function () {
+  "use strict";
+
+  let detectedForms = [];
+  let currentDomain = window.location.hostname;
+
+  // Detect login forms on page load
+  function detectLoginForms() {
+    const forms = document.querySelectorAll("form");
+
+    forms.forEach((form) => {
+      const passwordFields = form.querySelectorAll('input[type="password"]');
+      const usernameFields = form.querySelectorAll(
+        'input[type="text"], input[type="email"], input[name*="user"], input[name*="email"], input[autocomplete="username"]'
+      );
+
+      if (passwordFields.length > 0 && usernameFields.length > 0) {
+        detectedForms.push({
+          form: form,
+          usernameField: usernameFields[0],
+          passwordField: passwordFields[0],
+        });
+
+        // Add autofill button
+        addAutofillButton(form, usernameFields[0], passwordFields[0]);
+      }
+    });
+  }
+
+  // Add autofill button to login form
+  function addAutofillButton(form, usernameField, passwordField) {
+    // Check if button already exists
+    if (form.querySelector(".pm-autofill-btn")) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pm-autofill-btn";
+    button.innerHTML = "🔐 Autofill with Password Manager";
+    button.style.cssText = `
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 0;
+      width: 100%;
+      transition: transform 0.2s;
+    `;
+
+    button.addEventListener("mouseenter", () => {
+      button.style.transform = "translateY(-2px)";
+    });
+
+    button.addEventListener("mouseleave", () => {
+      button.style.transform = "translateY(0)";
+    });
+
+    button.addEventListener("click", async () => {
+      await autofillForm(usernameField, passwordField);
+    });
+
+    // Insert button before the submit button or at the end of the form
+    const submitButton = form.querySelector(
+      'button[type="submit"], input[type="submit"]'
+    );
+    if (submitButton) {
+      submitButton.parentNode.insertBefore(button, submitButton);
+    } else {
+      form.appendChild(button);
+    }
+  }
+
+  // Autofill form with saved credentials
+  async function autofillForm(usernameField, passwordField) {
+    try {
+      const response = await fetch("http://localhost:5000/get-all-passwords", {
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        showNotification(
+          "Please login to the Password Manager extension first",
+          "error"
+        );
+        return;
+      }
+
+      const passwords = await response.json();
+
+      // Find matching credentials for current domain
+      const matching = passwords.filter(
+        (pwd) =>
+          currentDomain.includes(pwd.service.toLowerCase()) ||
+          pwd.service.toLowerCase().includes(currentDomain)
+      );
+
+      if (matching.length === 0) {
+        showNotification("No saved passwords found for this site", "info");
+        return;
+      }
+
+      // If multiple matches, show selection dialog
+      if (matching.length === 1) {
+        fillFields(usernameField, passwordField, matching[0]);
+        showNotification("Credentials filled successfully!", "success");
+      } else {
+        showCredentialSelector(usernameField, passwordField, matching);
+      }
+    } catch (error) {
+      showNotification("Failed to retrieve credentials", "error");
+      console.error("Autofill error:", error);
+    }
+  }
+
+  // Fill form fields
+  function fillFields(usernameField, passwordField, credentials) {
+    usernameField.value = credentials.username;
+    passwordField.value = credentials.password;
+
+    // Trigger input events for frameworks like React
+    const inputEvent = new Event("input", { bubbles: true });
+    usernameField.dispatchEvent(inputEvent);
+    passwordField.dispatchEvent(inputEvent);
+  }
+
+  // Show credential selector when multiple matches
+  function showCredentialSelector(usernameField, passwordField, credentials) {
+    const overlay = document.createElement("div");
+    overlay.className = "pm-credential-selector-overlay";
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999999;
+    `;
+
+    const dialog = document.createElement("div");
+    dialog.style.cssText = `
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    `;
+
+    dialog.innerHTML = `
+      <h3 style="margin: 0 0 16px 0; color: #333;">Select Account</h3>
+      <div class="pm-credential-list">
+        ${credentials
+          .map(
+            (cred, index) => `
+          <div class="pm-credential-item" data-index="${index}" style="
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+          ">
+            <div style="font-weight: 600; color: #333;">${cred.service}</div>
+            <div style="font-size: 14px; color: #666;">${cred.username}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      <button class="pm-cancel-btn" style="
+        width: 100%;
+        padding: 10px;
+        margin-top: 12px;
+        background: #f0f0f0;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      ">Cancel</button>
+    `;
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Add hover effects
+    dialog.querySelectorAll(".pm-credential-item").forEach((item) => {
+      item.addEventListener("mouseenter", () => {
+        item.style.background = "#e9ecef";
+      });
+      item.addEventListener("mouseleave", () => {
+        item.style.background = "#f8f9fa";
+      });
+      item.addEventListener("click", () => {
+        const index = parseInt(item.dataset.index);
+        fillFields(usernameField, passwordField, credentials[index]);
+        document.body.removeChild(overlay);
+        showNotification("Credentials filled successfully!", "success");
+      });
+    });
+
+    dialog.querySelector(".pm-cancel-btn").addEventListener("click", () => {
+      document.body.removeChild(overlay);
+    });
+  }
+
+  // Show notification
+  function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.className = "pm-notification";
+
+    const colors = {
+      success: "#28a745",
+      error: "#dc3545",
+      info: "#667eea",
+    };
+
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${colors[type]};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 999999;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      animation: slideIn 0.3s ease;
+    `;
+
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.animation = "slideOut 0.3s ease";
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // Listen for messages from background script
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "openSaveDialog") {
+      // TODO: Implement save dialog
+      showNotification("Save dialog not yet implemented", "info");
+    }
+  });
+
+  // Detect forms when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", detectLoginForms);
+  } else {
+    detectLoginForms();
+  }
+
+  // Also detect forms added dynamically
+  const observer = new MutationObserver(() => {
+    detectLoginForms();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+
+  // Add CSS animations
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+})();

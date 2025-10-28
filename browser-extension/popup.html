@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Login/Register Section -->
+      <div id="auth-section" class="section">
+        <h1>🔐 Password Manager</h1>
+
+        <div id="login-form" class="form-container">
+          <h2>Login</h2>
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button id="login-btn" class="btn btn-primary">Login</button>
+          <p class="switch-form">
+            Don't have an account?
+            <a href="#" id="show-register">Sign up</a>
+          </p>
+          <p id="login-error" class="error-message"></p>
+        </div>
+
+        <div id="register-form" class="form-container hidden">
+          <h2>Sign Up</h2>
+          <input
+            type="text"
+            id="register-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="register-password"
+            placeholder="Password"
+            autocomplete="new-password"
+          />
+          <input
+            type="password"
+            id="register-confirm"
+            placeholder="Confirm Password"
+            autocomplete="new-password"
+          />
+          <button id="register-btn" class="btn btn-primary">Sign Up</button>
+          <p class="switch-form">
+            Already have an account?
+            <a href="#" id="show-login">Login</a>
+          </p>
+          <p id="register-error" class="error-message"></p>
+        </div>
+      </div>
+
+      <!-- Password Management Section -->
+      <div id="main-section" class="section hidden">
+        <div class="header">
+          <h1>🔐 My Passwords</h1>
+          <div class="user-info">
+            <span id="username-display"></span>
+            <button id="logout-btn" class="btn btn-secondary btn-sm">
+              Logout
+            </button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="add-password-btn" class="btn btn-success">
+            + Add Password
+          </button>
+          <button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button>
+        </div>
+
+        <div id="search-container">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search passwords..."
+          />
+        </div>
+
+        <div id="passwords-list" class="passwords-list">
+          <!-- Passwords will be loaded here -->
+        </div>
+
+        <!-- Add Password Modal -->
+        <div id="add-modal" class="modal hidden">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Password</h2>
+            <input
+              type="text"
+              id="new-service"
+              placeholder="Service (e.g., Facebook)"
+            />
+            <input type="text" id="new-username" placeholder="Username/Email" />
+            <input type="password" id="new-password" placeholder="Password" />
+            <button id="generate-password-btn" class="btn btn-secondary btn-sm">
+              Generate Strong Password
+            </button>
+            <div class="modal-actions">
+              <button id="save-password-btn" class="btn btn-primary">
+                Save
+              </button>
+              <button id="cancel-add-btn" class="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
+            <p id="add-error" class="error-message"></p>
+          </div>
+        </div>
+
+        <!-- Edit Password Modal -->
+        <div id="edit-modal" class="modal hidden">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Password</h2>
+            <input
+              type="text"
+              id="edit-service"
+              placeholder="Service"
+              readonly
+            />
+            <input
+              type="text"
+              id="edit-username"
+              placeholder="Username/Email"
+              readonly
+            />
+            <input
+              type="password"
+              id="edit-password"
+              placeholder="New Password"
+            />
+            <div class="modal-actions">
+              <button id="update-password-btn" class="btn btn-primary">
+                Update
+              </button>
+              <button id="cancel-edit-btn" class="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
+            <p id="edit-error" class="error-message"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Notification -->
+      <div id="notification" class="notification hidden"></div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
