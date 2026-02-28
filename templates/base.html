@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  {% if show_navbar %}
+  {% if show_navbar is defined and show_navbar %}
   <nav class="navbar">
     <div class="navbar-container">
       <div class="dropdown">
@@ -26,7 +26,6 @@
 
   {% block content %}{% endblock %}
 
-  <!-- Common Modals -->
   {% block modals %}{% endblock %}
 
   <div id="notification-modal" class="notification-modal">
