@@ -1,38 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - Password Manager</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="container">
-    <div class="card">
-      <h1 class="title">Create an Account</h1>
-      <p class="subtitle">Join us and securely manage your passwords.</p>
-      <form id="signup-form">
-        <div class="input-group">
-          <label for="register-username">Username</label>
-          <input id="register-username" type="text" placeholder="Enter your username" required>
-        </div>
-        <div class="input-group">
-          <label for="register-password">Password</label>
-          <div class="password-container">
-            <input id="register-password" type="password" placeholder="Enter your password">
-            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('register-password', this)">👁️</button>
-          </div>
-        </div>
-        <button type="submit" class="btn-primary">Sign Up</button>
-        <p id="signup-error" class="error-message"></p>
-      </form>
-      <div class="loading" id="loading-spinner"></div>
-      <div class="footer">
-        <p>Already have an account? <a href="/">Log in</a></p>
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Password Manager{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h1 class="title">Create an Account</h1>
+    <p class="subtitle">Join us and securely manage your passwords.</p>
+    <form id="signup-form">
+      <div class="input-group">
+        <label for="register-username">Username</label>
+        <input id="register-username" type="text" placeholder="Enter your username" required>
       </div>
+      <div class="input-group">
+        <label for="register-password">Password</label>
+        <div class="password-container">
+          <input id="register-password" type="password" placeholder="Enter your password">
+          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('register-password', this)">👁️</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">Sign Up</button>
+      <p id="signup-error" class="error-message"></p>
+    </form>
+    <div class="loading" id="loading-spinner"></div>
+    <div class="footer">
+      <p>Already have an account? <a href="/">Log in</a></p>
     </div>
   </div>
-  <script src="/static/main.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
