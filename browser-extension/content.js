@@ -5,6 +5,19 @@
 
   let detectedForms = [];
   let currentDomain = window.location.hostname;
+  let API_URL = "http://localhost:5000"; // Default, updated via background script
+
+  // Get API URL from background script
+  async function getApiUrl() {
+    try {
+      const response = await chrome.runtime.sendMessage({ action: "getApiUrl" });
+      if (response && response.url) {
+        API_URL = response.url;
+      }
+    } catch (error) {
+      console.warn("Failed to get API URL from background, using default");
+    }
+  }
 
   // Detect login forms on page load
   function detectLoginForms() {
@@ -78,7 +91,7 @@
   // Autofill form with saved credentials
   async function autofillForm(usernameField, passwordField) {
     try {
-      const response = await fetch("http://localhost:5000/get-all-passwords", {
+      const response = await fetch(`${API_URL}/get-all-passwords`, {
         credentials: "include",
       });
 
@@ -234,14 +247,14 @@
       z-index: 999999;
       font-family: 'Segoe UI', sans-serif;
       font-size: 14px;
-      animation: slideIn 0.3s ease;
+      animation: pmSlideIn 0.3s ease;
     `;
 
     notification.textContent = message;
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.style.animation = "slideOut 0.3s ease";
+      notification.style.animation = "pmSlideOut 0.3s ease";
       setTimeout(() => {
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
@@ -253,17 +266,22 @@
   // Listen for messages from background script
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "openSaveDialog") {
-      // TODO: Implement save dialog
       showNotification("Save dialog not yet implemented", "info");
     }
   });
 
-  // Detect forms when DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", detectLoginForms);
-  } else {
-    detectLoginForms();
+  // Initialize: get API URL, then detect forms
+  async function init() {
+    await getApiUrl();
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", detectLoginForms);
+    } else {
+      detectLoginForms();
+    }
   }
+
+  init();
 
   // Also detect forms added dynamically
   const observer = new MutationObserver(() => {
@@ -278,7 +296,7 @@
   // Add CSS animations
   const style = document.createElement("style");
   style.textContent = `
-    @keyframes slideIn {
+    @keyframes pmSlideIn {
       from {
         transform: translateX(400px);
         opacity: 0;
@@ -288,7 +306,7 @@
         opacity: 1;
       }
     }
-    @keyframes slideOut {
+    @keyframes pmSlideOut {
       from {
         transform: translateX(0);
         opacity: 1;
