@@ -115,7 +115,7 @@ def main():
     print("🔐 Password Manager API Test Suite")
     print("="*60)
     print(f"\nTesting API at: {API_URL}")
-    print("Make sure the API server is running (python api.py)")
+    print("Make sure the API server is running (python app.py)")
     input("\nPress Enter to start tests...")
     
     session = requests.Session()
