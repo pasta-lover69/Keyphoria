@@ -67,6 +67,8 @@ Open http://127.0.0.1:5000/ in your browser.
 4. **Pin & Login** — Pin the extension and log in with your Keyphoria account
 5. **Autofill** — Visit any login page and Keyphoria will offer to autofill credentials
 
+> ⚠️ **Note:** Not all websites use the same login form structure, so the auto-save popup may not always appear. If it doesn't, you can manually add the password through the extension or the [Keyphoria web app](https://keyphoria.vercel.app).
+
 ---
 
 ## 📂 Project Structure
