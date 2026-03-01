@@ -1,31 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up - Password Manager{% endblock %}
+{% block title %}Sign Up - Keyphoria{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="card">
-    <h1 class="title">Create an Account</h1>
-    <p class="subtitle">Join us and securely manage your passwords.</p>
-    <form id="signup-form">
-      <div class="input-group">
-        <label for="register-username">Username</label>
-        <input id="register-username" type="text" placeholder="Enter your username" required>
-      </div>
-      <div class="input-group">
-        <label for="register-password">Password</label>
-        <div class="password-container">
-          <input id="register-password" type="password" placeholder="Enter your password">
-          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('register-password', this)">👁️</button>
-        </div>
-      </div>
-      <button type="submit" class="btn-primary">Sign Up</button>
-      <p id="signup-error" class="error-message"></p>
-    </form>
-    <div class="loading" id="loading-spinner"></div>
-    <div class="footer">
-      <p>Already have an account? <a href="/">Log in</a></p>
-    </div>
-  </div>
-</div>
+<script>
+  // Redirect to index page with signup toggle active
+  window.location.href = "/?signup=1";
+</script>
 {% endblock %}

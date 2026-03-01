@@ -1,31 +1,176 @@
 {% extends "base.html" %}
 
-{% block title %}Password Manager - Login{% endblock %}
+{% block title %}Keyphoria - Secure Password Manager{% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="card">
-    <h1 class="title">Welcome Back</h1>
-    <p class="subtitle">Securely manage your passwords with ease.</p>
-    <form id="login-form">
-      <div class="input-group">
-        <label for="login-username">Username</label>
-        <input id="login-username" type="text" placeholder="Enter your username" required />
-      </div>
-      <div class="input-group">
-        <label for="login-password">Password</label>
-        <div class="password-container">
-          <input id="login-password" type="password" placeholder="Enter your password" required />
-          <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password', this)">👁️</button>
-        </div>
-      </div>
-      <button type="submit" class="btn-primary">Log In</button>
-      <p id="login-error" class="error-message"></p>
-    </form>
-    <div class="loading" id="loading-spinner"></div>
-    <div class="footer">
-      <p>Don't have an account? <a href="/signup">Sign up</a></p>
+<!-- Loading Screen -->
+<div id="loading-screen" class="loading-screen">
+  <div class="loader-container">
+    <div class="loader">
+      <svg height="0" width="0" viewBox="0 0 64 64" class="loader-svg-defs">
+        <defs>
+          <linearGradient gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="grad-b">
+            <stop stop-color="#973BED" />
+            <stop stop-color="#007CFF" offset="1" />
+          </linearGradient>
+          <linearGradient gradientUnits="userSpaceOnUse" y2="0" x2="0" y1="64" x1="0" id="grad-c">
+            <stop stop-color="#FFC800" />
+            <stop stop-color="#FF00FF" offset="1" />
+            <animateTransform repeatCount="indefinite" keySplines=".42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1" keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1" dur="8s" values="0 32 32;-270 32 32;-270 32 32;-540 32 32;-540 32 32;-810 32 32;-810 32 32;-1080 32 32;-1080 32 32" type="rotate" attributeName="gradientTransform" />
+          </linearGradient>
+          <linearGradient gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="grad-d">
+            <stop stop-color="#00E0ED" />
+            <stop stop-color="#00DA72" offset="1" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <!-- K -->
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="loader-letter">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#grad-b)" d="M 12,4 V 60 M 12,32 L 52,4 M 12,32 L 52,60" class="dash" pathLength="360" />
+      </svg>
+      <!-- E -->
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="loader-letter">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#grad-c)" d="M 52,4 H 12 V 32 H 44 M 12,32 V 60 H 52" class="spin" pathLength="360" />
+      </svg>
+      <!-- Y -->
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="loader-letter">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#grad-d)" d="M 54.722656,3.9726563 A 2.0002,2.0002 0 0 0 54.941406,4 h 5.007813 C 58.955121,17.046124 49.099667,27.677057 36.121094,29.580078 a 2.0002,2.0002 0 0 0 -1.708985,1.978516 V 60 H 29.587891 V 31.558594 A 2.0002,2.0002 0 0 0 27.878906,29.580078 C 14.900333,27.677057 5.0448787,17.046124 4.0507812,4 H 9.28125 c 1.231666,11.63657 10.984383,20.554048 22.6875,20.734375 a 2.0002,2.0002 0 0 0 0.02344,0 c 11.806958,0.04283 21.70649,-9.003371 22.730469,-20.7617187 z" class="dash" pathLength="360" />
+      </svg>
     </div>
+    <h1 class="loader-title">keyphoria</h1>
+    <p class="loader-subtitle">Your passwords, secured.</p>
   </div>
 </div>
+
+<!-- Main Split Layout -->
+<div class="split-page" id="auth-page" style="display: none;">
+
+  <!-- Left Panel: Extension Setup Guide -->
+  <div class="split-left">
+    <div class="guide-content">
+      <h1 class="guide-title">🔐 Keyphoria</h1>
+      <p class="guide-subtitle">Browser Extension Setup</p>
+
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <h3>Download the Extension</h3>
+            <p>Clone or download the <strong>browser-extension</strong> folder from the project repository.</p>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <h3>Open Chrome Extensions</h3>
+            <p>Go to <code>chrome://extensions</code> and enable <strong>Developer Mode</strong> (top-right toggle).</p>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <h3>Load the Extension</h3>
+            <p>Click <strong>"Load unpacked"</strong> and select the <code>browser-extension</code> folder.</p>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-number">4</div>
+          <div class="step-info">
+            <h3>Pin & Login</h3>
+            <p>Pin the Keyphoria extension from the puzzle icon, then log in with your account.</p>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-number">5</div>
+          <div class="step-info">
+            <h3>Auto-fill Passwords</h3>
+            <p>Visit any login page — Keyphoria will offer to auto-fill your saved credentials!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Auth Form -->
+  <div class="split-right">
+    <div class="wrapper">
+      <div class="card-switch">
+        <label class="switch">
+          <input type="checkbox" class="toggle" id="auth-toggle" />
+          <span class="slider"></span>
+          <span class="card-side"></span>
+          <div class="flip-card__inner">
+            <!-- Login Side -->
+            <div class="flip-card__front">
+              <div class="flip-title">Log in</div>
+              <form class="flip-card__form" id="login-form">
+                <input class="flip-card__input" id="login-username" name="username" placeholder="Username" type="text" required />
+                <input class="flip-card__input" id="login-password" name="password" placeholder="Password" type="password" required />
+                <p id="login-error" class="flip-error"></p>
+                <button type="submit" class="flip-card__btn">Let's go!</button>
+              </form>
+              <div class="bounce-loader" id="login-loader">
+                <div class="ball"></div>
+                <div class="ball"></div>
+                <div class="ball"></div>
+                <div class="ball-shadow"></div>
+                <div class="ball-shadow"></div>
+                <div class="ball-shadow"></div>
+              </div>
+            </div>
+            <!-- Signup Side -->
+            <div class="flip-card__back">
+              <div class="flip-title">Sign up</div>
+              <form class="flip-card__form" id="signup-form">
+                <input class="flip-card__input" id="signup-username" name="username" placeholder="Username" type="text" required />
+                <input class="flip-card__input" id="signup-password" name="password" placeholder="Password" type="password" required />
+                <input class="flip-card__input" id="signup-confirm" name="confirm" placeholder="Confirm Password" type="password" required />
+                <p id="signup-error" class="flip-error"></p>
+                <button type="submit" class="flip-card__btn">Confirm!</button>
+              </form>
+              <div class="bounce-loader" id="signup-loader">
+                <div class="ball"></div>
+                <div class="ball"></div>
+                <div class="ball"></div>
+                <div class="ball-shadow"></div>
+                <div class="ball-shadow"></div>
+                <div class="ball-shadow"></div>
+              </div>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Loading screen animation
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if we should show signup
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signup') === '1') {
+      const toggle = document.getElementById('auth-toggle');
+      if (toggle) toggle.checked = true;
+    }
+
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      const authPage = document.getElementById('auth-page');
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        authPage.style.display = 'flex';
+        authPage.style.animation = 'fadeInUp 0.6s ease';
+      }, 500);
+    }, 2500);
+  });
+</script>
 {% endblock %}
