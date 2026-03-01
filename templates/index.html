@@ -45,6 +45,10 @@
 <!-- Main Split Layout -->
 <div class="split-page" id="auth-page" style="display: none;">
 
+  <!-- Mobile Login Button (visible only on mobile) -->
+  <button class="mobile-login-btn" id="mobile-login-btn" onclick="toggleMobileAuth()">
+    <p>Log in / Sign up</p>
+  </button>
   <!-- Left Panel: Extension Setup Guide -->
   <div class="split-left">
     <div class="guide-content">
@@ -157,6 +161,33 @@
 
 {% block scripts %}
 <script>
+  // Mobile auth toggle
+  function toggleMobileAuth() {
+    const rightPanel = document.querySelector('.split-right');
+    const loginBtn = document.getElementById('mobile-login-btn');
+
+    if (rightPanel.classList.contains('mobile-auth-open')) {
+      // Close
+      rightPanel.classList.remove('mobile-auth-open');
+      loginBtn.style.display = '';
+      const closeBtn = rightPanel.querySelector('.mobile-auth-close');
+      if (closeBtn) closeBtn.remove();
+    } else {
+      // Open
+      rightPanel.classList.add('mobile-auth-open');
+      loginBtn.style.display = 'none';
+
+      // Add close button if not exists
+      if (!rightPanel.querySelector('.mobile-auth-close')) {
+        const close = document.createElement('button');
+        close.className = 'mobile-auth-close';
+        close.innerHTML = '✕';
+        close.onclick = () => toggleMobileAuth();
+        rightPanel.appendChild(close);
+      }
+    }
+  }
+
   // Loading screen animation
   document.addEventListener('DOMContentLoaded', () => {
     // Check if we should show signup
