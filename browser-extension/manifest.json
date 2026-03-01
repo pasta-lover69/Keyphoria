@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Secure Password Manager",
-  "version": "1.1.0",
-  "description": "A secure password manager with auto-fill capabilities. Store, manage, and auto-fill your passwords across websites.",
+  "name": "Keyphoria - Password Manager",
+  "version": "1.2.0",
+  "description": "Keyphoria — Your passwords, secured. Auto-fill and manage your passwords across websites.",
   "permissions": [
     "storage",
     "activeTab",
