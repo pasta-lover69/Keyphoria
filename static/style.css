@@ -631,41 +631,85 @@ body::before {
   box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
 }
 
-.btn-get {
-  background: #4caf50;
+/* ─── Action Buttons (Show/Edit/Delete) ─── */
+.actions-cell {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
-.btn-get:hover {
-  background: #45a049;
-}
-
-.btn-edit {
-  background: #ffa500;
-}
-
-.btn-edit:hover {
-  background: #ff8c00;
-}
-
-.btn-delete {
-  background: #ff4d4d;
-}
-
-.btn-delete:hover {
-  background: #e60000;
-}
-
-.btn-get,
-.btn-edit,
-.btn-delete {
-  color: white;
+.action-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 90px;
+  height: 36px;
   border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 0px 14px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
-  margin: 0 2px;
-  transition: background 0.3s ease;
+  border-radius: 8px;
+  transition-duration: .3s;
+}
+
+.action-svg {
+  width: 13px;
+  position: absolute;
+  right: 0;
+  margin-right: 14px;
+  fill: white;
+  transition-duration: .3s;
+}
+
+.action-btn:hover {
+  color: transparent;
+}
+
+.action-btn:hover .action-svg {
+  right: 43%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  transition-duration: .3s;
+}
+
+.action-btn:active {
+  transform: translate(2px, 2px);
+  transition-duration: .3s;
+}
+
+/* Show - Green */
+.action-show {
+  background-color: #4caf50;
+  box-shadow: 4px 4px 0px #388e3c;
+}
+
+.action-show:active {
+  box-shadow: 1px 1px 0px #388e3c;
+}
+
+/* Edit - Purple */
+.action-edit {
+  background-color: rgb(168, 38, 255);
+  box-shadow: 4px 4px 0px rgb(140, 32, 212);
+}
+
+.action-edit:active {
+  box-shadow: 1px 1px 0px rgb(140, 32, 212);
+}
+
+/* Delete - Red */
+.action-delete {
+  background-color: #ff4d4d;
+  box-shadow: 4px 4px 0px #cc0000;
+}
+
+.action-delete:active {
+  box-shadow: 1px 1px 0px #cc0000;
 }
 
 .logout-btn {
@@ -847,8 +891,9 @@ body::before {
 .password-table th,
 .password-table td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 16px;
   text-align: left;
+  vertical-align: middle;
 }
 
 .password-table th {
