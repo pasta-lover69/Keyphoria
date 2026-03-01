@@ -212,13 +212,7 @@ function showAddPasswordModal() {
   if (modal) modal.style.display = "flex";
 }
 
-function showGetPasswordModal() {
-  const modal = document.getElementById("get-password-modal");
-  if (modal) {
-    modal.style.display = "block";
-    populateServiceDropdowns();
-  }
-}
+
 
 
 // ─── Password Functions ──────────────────────────────────────────────────────
@@ -259,78 +253,7 @@ async function addPassword() {
   }
 }
 
-async function getPassword() {
-  const serviceEl = document.getElementById("get-service");
-  const usernameEl = document.getElementById("get-username");
 
-  if (!serviceEl || !usernameEl) return;
-
-  const service = serviceEl.value;
-  const username = usernameEl.value;
-
-  if (!service || !username) {
-    showNotification("Please select a service and enter a username.", "error");
-    return;
-  }
-
-  try {
-    const response = await fetch(`/get/${encodeURIComponent(service)}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      alert(`Username: ${data.username}\nPassword: ${data.password}`);
-      closeModal("get-password-modal");
-    } else {
-      showNotification(data.error || "An unknown error occurred.", "error");
-    }
-  } catch (error) {
-    showNotification("Failed to retrieve password. Please try again.", "error");
-    console.error(error);
-  }
-}
-
-async function copyPassword() {
-  const passwordText = document.getElementById("retrievedPassword");
-  if (!passwordText) return;
-
-  try {
-    await navigator.clipboard.writeText(passwordText.textContent);
-    showNotification("Password copied to clipboard!", "success");
-  } catch (error) {
-    // Fallback for older browsers
-    const textArea = document.createElement("textarea");
-    textArea.value = passwordText.textContent;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textArea);
-    showNotification("Password copied to clipboard!", "success");
-  }
-}
-
-function populateServiceDropdowns() {
-  const getServiceSelect = document.getElementById("get-service");
-  if (!getServiceSelect) return;
-
-  fetch("/get-services")
-    .then((res) => res.json())
-    .then((services) => {
-      getServiceSelect.innerHTML = "";
-      services.forEach((service) => {
-        const option = document.createElement("option");
-        option.value = service;
-        option.textContent = service;
-        getServiceSelect.appendChild(option);
-      });
-    })
-    .catch((error) => {
-      console.error("Error loading services:", error);
-    });
-}
 
 
 // ─── Auth Functions ──────────────────────────────────────────────────────────
@@ -472,121 +395,7 @@ function exitApp() {
 }
 
 
-// ─── Retrieve Password Modal Functions ───────────────────────────────────────
 
-function openGetPasswordModal() {
-  const modal = document.getElementById("getPasswordModal");
-  if (!modal) return;
-  modal.style.display = "block";
-  loadUserServices();
-
-  const serviceEl = document.getElementById("getService");
-  const usernameEl = document.getElementById("getUsername");
-  const resultEl = document.getElementById("passwordResult");
-  if (serviceEl) serviceEl.value = "";
-  if (usernameEl) usernameEl.value = "";
-  if (resultEl) resultEl.style.display = "none";
-}
-
-function closeGetPasswordModal() {
-  const modal = document.getElementById("getPasswordModal");
-  if (modal) modal.style.display = "none";
-}
-
-// Close modal when clicking outside
-window.onclick = function (event) {
-  const modal = document.getElementById("getPasswordModal");
-  if (modal && event.target === modal) {
-    closeGetPasswordModal();
-  }
-};
-
-async function loadUserServices() {
-  const serviceSelect = document.getElementById("getService");
-  if (!serviceSelect) return;
-
-  try {
-    const response = await fetch("/get-services");
-    const services = await response.json();
-
-    // Clear existing options except the first one
-    while (serviceSelect.children.length > 1) {
-      serviceSelect.removeChild(serviceSelect.lastChild);
-    }
-
-    // Add user's services
-    services.forEach((service) => {
-      const option = document.createElement("option");
-      option.value = service;
-      option.textContent = service;
-      serviceSelect.appendChild(option);
-    });
-
-    // Add common services that might not be in user's list
-    const commonServices = ["Facebook", "Twitter", "Instagram", "Netflix", "Spotify", "TikTok", "Other"];
-    commonServices.forEach((service) => {
-      let exists = false;
-      for (let i = 1; i < serviceSelect.children.length; i++) {
-        if (serviceSelect.children[i].value === service) {
-          exists = true;
-          break;
-        }
-      }
-      if (!exists) {
-        const option = document.createElement("option");
-        option.value = service;
-        option.textContent = service;
-        serviceSelect.appendChild(option);
-      }
-    });
-  } catch (error) {
-    console.error("Error loading services:", error);
-  }
-}
-
-async function retrievePassword() {
-  const serviceEl = document.getElementById("getService");
-  const usernameEl = document.getElementById("getUsername");
-  const resultDiv = document.getElementById("passwordResult");
-  const passwordDisplay = document.getElementById("retrievedPassword");
-
-  if (!serviceEl || !usernameEl) return;
-
-  const service = serviceEl.value.trim();
-  const username = usernameEl.value.trim();
-
-  if (!service) {
-    showNotification("Please select a service.", "error");
-    return;
-  }
-  if (!username) {
-    showNotification("Please enter a username/email.", "error");
-    return;
-  }
-
-  try {
-    const response = await fetch(`/get/${encodeURIComponent(service)}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: username }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      if (passwordDisplay) passwordDisplay.textContent = data.password;
-      if (resultDiv) resultDiv.style.display = "block";
-      showNotification("Password retrieved successfully!", "success");
-    } else {
-      showNotification("Error: " + (data.error || "Password not found"), "error");
-      if (resultDiv) resultDiv.style.display = "none";
-    }
-  } catch (error) {
-    console.error("Error retrieving password:", error);
-    showNotification("Failed to retrieve password. Please try again.", "error");
-    if (resultDiv) resultDiv.style.display = "none";
-  }
-}
 
 
 // ─── Page Initialization ─────────────────────────────────────────────────────
@@ -610,10 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Populate service dropdowns only if they exist
-  if (document.getElementById("get-service")) {
-    populateServiceDropdowns();
-  }
+
 
   // Check auth status (shows/hides logout button)
   checkAuthStatus();
