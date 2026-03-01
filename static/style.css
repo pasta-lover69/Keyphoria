@@ -281,6 +281,63 @@ body::before {
   color: #a78bfa;
 }
 
+.guide-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  border-radius: 8px;
+}
+
+.guide-warning-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.guide-warning p {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+}
+
+/* ─── Neo Button Loader ─── */
+.neo-btn-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.neo-btn-loader .dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  animation: neoBounce 0.5s alternate infinite ease;
+}
+
+.neo-btn-loader .dot:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.neo-btn-loader .dot:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes neoBounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-8px);
+  }
+}
+
 /* Responsive: stack on mobile */
 @media (max-width: 800px) {
   .split-page {
