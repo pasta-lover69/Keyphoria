@@ -1,3 +1,102 @@
+// ─── Auth Form Handlers ──────────────────────────────────────────────────────
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Login form
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value;
+      const errorEl = document.getElementById("login-error");
+
+      if (!username || !password) {
+        if (errorEl) errorEl.textContent = "Please fill in all fields";
+        return;
+      }
+
+      try {
+        // Show loader
+        const loader = document.getElementById("login-loader");
+        if (loader) loader.style.display = "block";
+        if (errorEl) errorEl.textContent = "";
+
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = data.redirect || "/profile";
+        } else {
+          if (loader) loader.style.display = "none";
+          if (errorEl) errorEl.textContent = data.error || "Login failed";
+        }
+      } catch (err) {
+        const loader = document.getElementById("login-loader");
+        if (loader) loader.style.display = "none";
+        if (errorEl) errorEl.textContent = "Network error. Please try again.";
+      }
+    });
+  }
+
+  // Signup form
+  const signupForm = document.getElementById("signup-form");
+  if (signupForm) {
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("signup-username").value.trim();
+      const password = document.getElementById("signup-password").value;
+      const confirm = document.getElementById("signup-confirm").value;
+      const errorEl = document.getElementById("signup-error");
+
+      if (!username || !password || !confirm) {
+        if (errorEl) errorEl.textContent = "Please fill in all fields";
+        return;
+      }
+
+      if (password !== confirm) {
+        if (errorEl) errorEl.textContent = "Passwords do not match";
+        return;
+      }
+
+      if (password.length < 6) {
+        if (errorEl) errorEl.textContent = "Password must be at least 6 characters";
+        return;
+      }
+
+      try {
+        // Show loader
+        const loader = document.getElementById("signup-loader");
+        if (loader) loader.style.display = "block";
+        if (errorEl) errorEl.textContent = "";
+
+        const res = await fetch("/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          window.location.href = data.redirect || "/profile";
+        } else {
+          if (loader) loader.style.display = "none";
+          if (errorEl) errorEl.textContent = data.error || "Registration failed";
+        }
+      } catch (err) {
+        const loader = document.getElementById("signup-loader");
+        if (loader) loader.style.display = "none";
+        if (errorEl) errorEl.textContent = "Network error. Please try again.";
+      }
+    });
+  }
+});
+
 // ─── Utility Functions ───────────────────────────────────────────────────────
 
 function showNotification(message, type = "info") {
