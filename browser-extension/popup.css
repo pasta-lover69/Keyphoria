@@ -5,11 +5,11 @@
 }
 
 body {
-  width: 400px;
-  min-height: 500px;
+  width: 380px;
+  min-height: 480px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #333;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #fff;
 }
 
 .container {
@@ -18,51 +18,63 @@ body {
 }
 
 .section {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 22px;
   text-align: center;
   margin-bottom: 20px;
-  color: #667eea;
+  background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 h2 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #444;
+  font-size: 16px;
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 input[type="text"],
 input[type="password"] {
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
   transition: border-color 0.3s;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #6a11cb;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .btn {
-  padding: 12px 20px;
+  padding: 11px 18px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -70,33 +82,35 @@ input[type="password"]:focus {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: white;
+  box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .btn-success {
-  background: #28a745;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .btn-success:hover {
-  background: #218838;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
 }
 
 .btn-danger {
@@ -109,64 +123,65 @@ input[type="password"]:focus {
 }
 
 .btn-sm {
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 5px 10px;
+  font-size: 11px;
 }
 
 .switch-form {
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   margin-top: 10px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .switch-form a {
-  color: #667eea;
+  color: #a78bfa;
   text-decoration: none;
   font-weight: 600;
 }
 
 .switch-form a:hover {
   text-decoration: underline;
+  color: #c4b5fd;
 }
 
 .error-message {
-  color: #dc3545;
-  font-size: 12px;
+  color: #ff6b6b;
+  font-size: 11px;
   text-align: center;
-  margin-top: 8px;
-  min-height: 18px;
+  margin-top: 6px;
+  min-height: 16px;
 }
 
 .hidden {
   display: none !important;
 }
 
-/* Main Section */
+/* ─── Main Section ─── */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .header h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #666;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .actions {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .actions .btn {
@@ -174,29 +189,41 @@ input[type="password"]:focus {
 }
 
 #search-container {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 #search-input {
   width: 100%;
-  padding: 10px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+#search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: #6a11cb;
 }
 
 .passwords-list {
-  max-height: 300px;
+  max-height: 280px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .password-item {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -204,8 +231,9 @@ input[type="password"]:focus {
 }
 
 .password-item:hover {
-  background: #e9ecef;
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateX(3px);
 }
 
 .password-info {
@@ -214,63 +242,66 @@ input[type="password"]:focus {
 
 .password-service {
   font-weight: 600;
-  color: #333;
-  font-size: 14px;
+  color: #fff;
+  font-size: 13px;
 }
 
 .password-username {
-  color: #666;
-  font-size: 12px;
-  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  margin-top: 2px;
 }
 
 .password-actions {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
 .password-actions button {
-  padding: 6px 10px;
-  font-size: 11px;
+  padding: 5px 8px;
+  font-size: 10px;
   border-radius: 6px;
 }
 
-/* Modal */
+/* ─── Modal ─── */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  padding: 22px;
+  border-radius: 14px;
   width: 90%;
-  max-width: 350px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 340px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .modal-content h2 {
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  color: #fff;
 }
 
 .modal-content input {
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .modal-actions .btn {
@@ -279,25 +310,25 @@ input[type="password"]:focus {
 
 .close {
   float: right;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  color: #999;
+  color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   line-height: 20px;
 }
 
 .close:hover {
-  color: #333;
+  color: #fff;
 }
 
-/* Loading Spinner */
+/* ─── Loading ─── */
 .loading {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(15, 12, 41, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -305,74 +336,131 @@ input[type="password"]:focus {
 }
 
 .spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid #6a11cb;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+  width: 36px;
+  height: 36px;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Notification */
+/* ─── Notification ─── */
 .notification {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #28a745;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  background: linear-gradient(135deg, #28a745, #20c997);
   color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 10px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 3000;
-  animation: slideIn 0.3s ease;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  animation: notifSlide 0.3s ease;
 }
 
 .notification.error {
-  background: #dc3545;
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
 }
 
-@keyframes slideIn {
+@keyframes notifSlide {
   from {
-    transform: translateX(400px);
+    transform: translateY(-30px);
     opacity: 0;
   }
+
   to {
-    transform: translateX(0);
+    transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* Scrollbar */
+/* ─── Scrollbar ─── */
 .passwords-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .passwords-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 
 .passwords-list::-webkit-scrollbar-thumb {
-  background: #667eea;
+  background: #6a11cb;
   border-radius: 10px;
 }
 
 .passwords-list::-webkit-scrollbar-thumb:hover {
-  background: #5568d3;
+  background: #5a0cb5;
+}
+
+/* ─── Save Prompt ─── */
+.save-prompt {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: notifSlide 0.3s ease;
+}
+
+.save-prompt-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.save-prompt-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.save-prompt-text strong {
+  font-size: 13px;
+  color: #fff;
+}
+
+.save-prompt-detail {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.save-prompt-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.save-prompt-actions .btn {
+  padding: 6px 12px;
+  font-size: 11px;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
-  color: #999;
+  padding: 30px 16px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .empty-state p {
-  font-size: 14px;
-  margin-top: 10px;
+  font-size: 13px;
+  margin-top: 8px;
 }
