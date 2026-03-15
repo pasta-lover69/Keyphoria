@@ -4,6 +4,7 @@
 importScripts("config.js");
 
 let API_URL = "http://localhost:5000";
+let configReadyPromise = null;
 
 // Initialize config
 async function initBackgroundConfig() {
@@ -17,7 +18,8 @@ async function initBackgroundConfig() {
 // Initialize on install
 chrome.runtime.onInstalled.addListener(async () => {
   console.log("Password Manager Extension installed");
-  await initBackgroundConfig();
+  configReadyPromise = initBackgroundConfig();
+  await configReadyPromise;
 
   // Context menu for saving passwords
   chrome.contextMenus.create({
@@ -28,7 +30,14 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 // Also init on service worker startup
-initBackgroundConfig();
+configReadyPromise = initBackgroundConfig();
+
+async function ensureConfigReady() {
+  if (!configReadyPromise) {
+    configReadyPromise = initBackgroundConfig();
+  }
+  await configReadyPromise;
+}
 
 // Listen for messages from content scripts or popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -45,29 +54,109 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+function normalizeValue(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
+
+function buildDomainCandidates(domain) {
+  const host = normalizeValue(domain).replace(/^www\./, "");
+  if (!host) return [];
+
+  const parts = host.split(".").filter(Boolean);
+  const candidates = new Set([host]);
+
+  if (parts.length >= 2) {
+    candidates.add(`${parts[parts.length - 2]}.${parts[parts.length - 1]}`);
+    candidates.add(parts[parts.length - 2]);
+  } else if (parts.length === 1) {
+    candidates.add(parts[0]);
+  }
+
+  return Array.from(candidates);
+}
+
+function credentialMatchesDomain(credential, domainCandidates) {
+  const service = normalizeValue(credential?.service);
+  const username = normalizeValue(credential?.username);
+
+  if (!service) return false;
+
+  return domainCandidates.some((candidate) => {
+    return (
+      service === candidate ||
+      service.includes(candidate) ||
+      candidate.includes(service) ||
+      username.endsWith(`@${candidate}`)
+    );
+  });
+}
+
 // Get credentials for a specific domain
 async function handleGetCredentials(domain, sendResponse) {
+  await ensureConfigReady();
+
+  const domainCandidates = buildDomainCandidates(domain);
+  if (domainCandidates.length === 0) {
+    sendResponse({
+      success: false,
+      errorCode: "invalid_domain",
+      error: "No valid domain detected for autofill",
+    });
+    return;
+  }
+
   try {
     const response = await fetch(`${API_URL}/get-all-passwords`, {
       credentials: "include",
     });
 
-    if (response.ok) {
-      const passwords = await response.json();
-      const matching = passwords.filter((pwd) =>
-        pwd.service.toLowerCase().includes(domain.toLowerCase())
-      );
-      sendResponse({ success: true, credentials: matching });
-    } else {
-      sendResponse({ success: false, error: "Not logged in" });
+    if (response.status === 401) {
+      sendResponse({
+        success: false,
+        errorCode: "auth_required",
+        error: "Not logged in",
+      });
+      return;
     }
+
+    if (!response.ok) {
+      sendResponse({
+        success: false,
+        errorCode: "api_error",
+        error: `Failed to fetch credentials (status ${response.status})`,
+      });
+      return;
+    }
+
+    const passwords = await response.json();
+    if (!Array.isArray(passwords)) {
+      sendResponse({
+        success: false,
+        errorCode: "invalid_response",
+        error: "Unexpected server response while fetching credentials",
+      });
+      return;
+    }
+
+    const matching = passwords.filter((pwd) =>
+      credentialMatchesDomain(pwd, domainCandidates),
+    );
+    sendResponse({ success: true, credentials: matching });
   } catch (error) {
-    sendResponse({ success: false, error: error.message });
+    sendResponse({
+      success: false,
+      errorCode: "api_unreachable",
+      error: error.message || "Unable to reach API",
+    });
   }
 }
 
 // Save new credentials
 async function handleSaveCredentials(credentials, sendResponse) {
+  await ensureConfigReady();
+
   try {
     const response = await fetch(`${API_URL}/add`, {
       method: "POST",
